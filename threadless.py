@@ -1,28 +1,33 @@
+from PIL import Image
 import os
 import shutil
-from PIL import Image
 from get_filenames import get_image_filenames, input_folder_path, output_folder_path
 
-def resize(tile, w,h):
-    # assuming 1:1 aspect ratio or a square
-    return tile.resize((w,h))
+def resize_image(tile, target_size):
+    """
+    Resize the image so that either its width or height matches the target size (2000 pixels),
+    while maintaining the aspect ratio.
+    """
+    original_width, original_height = tile.width, tile.height
 
-def resize_by_percentage(tile, percentage):
-    """
-    Resize the image based on a given percentage while maintaining aspect ratio.
-    """
-    # Calculate the new dimensions based on the percentage
-    new_width = int(tile.width * percentage)
-    new_height = int(tile.height * percentage)
+    # Determine the scaling factor based on the larger dimension
+    if original_width >= original_height:
+        scaling_factor = target_size / original_width
+    else:
+        scaling_factor = target_size / original_height
+
+    # Calculate new dimensions while maintaining the aspect ratio
+    new_width = int(original_width * scaling_factor)
+    new_height = int(original_height * scaling_factor)
     
     return tile.resize((new_width, new_height))
- 
-def tiled(tile, pattern_width, pattern_height, type, name):
+
+def tiled(tile, pattern_width, pattern_height, pattern_type, name, image_format):
     """
     Create a pattern from the tile and save it in the respective folder.
     """
     # Construct filename for the pattern
-    filename = os.path.join(output_folder_path, name, f"{name}_{type}_pattern.jpg")
+    filename = os.path.join(output_folder_path, name, f"{name}_{pattern_type}_pattern.jpg")
     pattern = Image.new("RGB", (pattern_width, pattern_height))
 
     # Paste the tile to create the pattern
@@ -30,8 +35,7 @@ def tiled(tile, pattern_width, pattern_height, type, name):
         for x in range(0, pattern_width, tile.width):
             pattern.paste(tile, (x, y))
     
-    # Save the pattern image
-    # pattern.show()
+    # Save the pattern image in the appropriate format
     pattern.save(filename)
 
 if __name__ == "__main__":
@@ -40,7 +44,6 @@ if __name__ == "__main__":
 
     # Define pattern sizes and types
     patterns = [
-       
         (9038, 8148, "shirt"),
         (5400, 6374, "socks"),
         (5968, 5709, "shoes"),
@@ -52,23 +55,25 @@ if __name__ == "__main__":
     for image_file, image_name in zip(image_files, image_names):
         with Image.open(image_file) as tile:
             tile.load()
+            image_format = tile.format  # Get the format of the original image (e.g., "PNG" or "JPEG")
 
-            # resize_tile = tile
+            # Resize the tile to approximately 2000px
+            resize_tile_2000 = resize_image(tile, 2000)
+            resize_filename_2000 = os.path.join(output_folder_path, image_name, f"{image_name}_tile_2000.{image_format.lower()}")
+            resize_tile_2000.save(resize_filename_2000)
 
-            if tile.width >= 4000 and tile.height >= 4000:
-                resize_tile_50_percent = resize_by_percentage(tile, 0.5)  # 50% of original size
-                
-                tiled(resize_tile_50_percent, 13000, 13000, "main", image_name)
-                
-                resize_tile_25_percent = resize_by_percentage(tile, 0.25)  # 25% of original size
-                                 
-           
-            # else: 
-            #     resize_tile = tile.size
+            # Resize the tile to approximately 500px
+            resize_tile_500 = resize_image(tile, 500)
+            resize_filename_500 = os.path.join(output_folder_path, image_name, f"{image_name}_tile_500.{image_format.lower()}")
+            resize_tile_500.save(resize_filename_500)
+
+            # Create the main pattern
+            tiled(resize_tile_2000, 13000, 13000, "main", image_name, image_format)
 
             # Create patterns for each size/type
             for w, h, pattern_type in patterns:
-                tiled(resize_tile_25_percent, w, h, pattern_type, image_name)
+                tiled(resize_tile_500, w, h, pattern_type, image_name, image_format)
     
+            # Move the original image to the output folder
             destination = os.path.join(output_folder_path, image_name, os.path.basename(image_file))
             shutil.move(image_file, destination)
