@@ -6,7 +6,7 @@ This is a personal project to automate the creation of pattern files of a partic
 
 Currently, the patterns generated are for file sizes that I usually work with. Most of these are around 4000 x 4000 px or larger to retain image quality. I haven't yet explored smaller sizes, as I first need to determine how the patterns will look at those dimensions.
 
-The project was built using the Python image manipulation library Pillow. Images are read and processed, and the output images are saved to a designated folder using Python libraries.
+The project utilizes the Python Imaging Library, Pillow, to handle image manipulation. It reads and processes input images, and saves the resulting patterns to a specified output folder using standard Python libraries
 
 ## Features
 
@@ -45,6 +45,7 @@ The project was built using the Python image manipulation library Pillow. Images
 3. The processed images and patterns will be saved in the `output_patterns/` folder, organized by image name.
 
 ## Project Structure
+
     ```bash
     pattern_generator/
     │
@@ -54,4 +55,8 @@ The project was built using the Python image manipulation library Pillow. Images
     ├── pattern_generator.py     # Main script for generating patterns
     ├── requirements.txt         # Dependencies for the project
     └── README.md                # Project documentation (this file)
-
+    ```
+## Future Improvements
+- Explore smaller pattern dimensions and optimize designs for them.
+- Integrate a feature to automatically suggest titles, descriptions, and tags based on image content.
+- Add more customization options for different print sizes and products.
