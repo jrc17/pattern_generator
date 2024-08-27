@@ -42,15 +42,16 @@ The project was built using the Python image manipulation library Pillow. Images
     ```bash
     python pattern_generator.py
 
-3. The generated patterns will be saved in the output folder along with the inital image used.
+3. The processed images and patterns will be saved in the `output_patterns/` folder, organized by image name.
 
 ## Project Structure
+    ```bash
+    pattern_generator/
+    │
+    ├── input/                   # Folder where you place your input images
+    ├── output/                  # Folder where the generated patterns will be saved
+    ├── get_filenames.py         # Script to fetch image filenames
+    ├── pattern_generator.py     # Main script for generating patterns
+    ├── requirements.txt         # Dependencies for the project
+    └── README.md                # Project documentation (this file)
 
-pattern_generator/
-│
-├── input/                   # Folder where you place your input images
-├── output/                  # Folder where the generated patterns will be saved
-├── get_filenames.py         # Script to fetch image filenames
-├── pattern_generator.py     # Main script for generating patterns
-├── requirements.txt         # Dependencies for the project
-└── README.md                # Project documentation (this file)
